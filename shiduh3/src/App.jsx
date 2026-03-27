@@ -5,6 +5,8 @@ import { translations } from './utils/translations';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import PhoneModal from './components/PhoneModal';
+import HowItWorks from './components/HowItWorks';
+import SecurityInfo from './components/SecurityInfo';
 
 export default function App() {
   const [lang, setLang] = useState('fr'); // Default to French
@@ -29,6 +31,8 @@ export default function App() {
       />
 
       <Hero isLoggedIn={isLoggedIn} user={user} t={t} />
+      <SecurityInfo t={t} />
+      <HowItWorks t={t} />
 
       <PhoneModal
         isOpen={showModal}

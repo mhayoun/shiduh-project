@@ -1,43 +1,30 @@
+import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, ArrowLeft } from 'lucide-react';
+import { Info } from 'lucide-react';
 
-export default function Hero({ isLoggedIn, user, t }) {
-  // Determine if we are in RTL mode to flip the icon
-  const isRtl = t.dir === 'rtl';
-
+export default function Hero({ t }) {
   return (
-    <main className="container mx-auto px-4 pt-32 text-center max-w-4xl">
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <h1 className="text-5xl md:text-7xl font-black mb-8 leading-[1.1] tracking-tighter text-slate-900">
-          {t.heroTitle}
-          <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
+    <main className="relative pt-48 pb-24 text-center overflow-hidden">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-blue-400/10 blur-[120px] rounded-full -z-10" />
+
+      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+        <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-8 leading-[1.05]">
+          {t.heroTitle}<br />
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 italic">
             {t.heroSub}
           </span>
         </h1>
-
-        <p className="text-xl text-slate-500 mb-12 max-w-2xl mx-auto leading-relaxed">
+        <p className="text-xl md:text-2xl text-slate-500 mb-12 max-w-2xl mx-auto leading-relaxed font-medium px-4">
           {t.heroDesc}
         </p>
 
-        {isLoggedIn && user?.phone && (
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-slate-900 text-white px-10 py-5 rounded-3xl font-bold shadow-2xl flex items-center gap-3 mx-auto hover:bg-blue-600 transition-all group"
-          >
-            {t.addCandidate}
-            {isRtl ? (
-              <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-            ) : (
-              <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-            )}
-          </motion.button>
-        )}
+        <button
+          onClick={() => document.getElementById('how-it-works-section')?.scrollIntoView({ behavior: 'smooth' })}
+          className="flex items-center gap-2 mx-auto px-10 py-5 rounded-[2rem] font-bold text-slate-600 bg-white shadow-xl shadow-slate-200/50 border border-slate-100 hover:bg-slate-50 transition-all active:scale-95"
+        >
+          <Info size={20} className="text-blue-600" />
+          {t.howItWorks}
+        </button>
       </motion.div>
     </main>
   );

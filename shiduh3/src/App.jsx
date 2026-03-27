@@ -5,11 +5,10 @@ import { translations } from './utils/translations';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import PhoneModal from './components/PhoneModal';
-import HowItWorks from './components/HowItWorks';
-import SecurityInfo from './components/SecurityInfo';
+import UnifiedProcess from './components/UnifiedProcess';
 
 export default function App() {
-  const [lang, setLang] = useState('fr'); // Default to French
+  const [lang, setLang] = useState('fr');
   const t = translations[lang];
 
   const {
@@ -30,9 +29,14 @@ export default function App() {
         t={t}
       />
 
-      <Hero isLoggedIn={isLoggedIn} user={user} t={t} />
-      <SecurityInfo t={t} />
-      <HowItWorks t={t} />
+      <Hero t={t} />
+
+      <UnifiedProcess
+          t={t}
+          isLoggedIn={isLoggedIn}
+          onLogin={handleGoogleSuccess}
+          currentLang={lang}
+      />
 
       <PhoneModal
         isOpen={showModal}

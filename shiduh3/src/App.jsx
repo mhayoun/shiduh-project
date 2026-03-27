@@ -116,8 +116,9 @@ export default function App() {
       <main className="container mx-auto px-4 pt-32 text-center max-w-4xl">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
           <h1 className="text-7xl font-black mb-8 leading-[1.1] tracking-tighter">
-            Shiduhim for religious and Orthodox <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Shiduh Moderne.</span>
+            Shiduhim<br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
+                for Religious and Orthodox.</span>
           </h1>
           <p className="text-xl text-slate-500 mb-12 max-w-2xl mx-auto leading-relaxed">
             Créez des fiches professionnelles et gérez vos candidats en toute simplicité.

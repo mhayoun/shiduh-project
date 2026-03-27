@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+/* On définit nos styles de base proprement pour la v4 */
+@theme {
+  --color-primary: #3b82f6;
+  --radius-2xl: 1.5rem;
+}
+
+/* Appliquer les styles au body avec la syntaxe v4 */
+@layer base {
+  body {
+    background-color: var(--color-slate-50);
+    color: var(--color-slate-900);
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}

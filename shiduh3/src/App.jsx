@@ -4,78 +4,93 @@ import { GoogleLogin, googleLogout } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, LogOut, Phone, ArrowRight, CheckCircle2 } from 'lucide-react';
+// Importation du client Supabase
+import { supabase } from './supabaseClient';
 
 export default function App() {
   const { user, isLoggedIn, login, logout, setPhone } = useAuthStore();
   const [showModal, setShowModal] = useState(false);
   const [phoneInput, setPhoneInput] = useState("");
 
-const onGoogleSuccess = async (res) => {
-  const decoded = jwtDecode(res.credential);
+  const onGoogleSuccess = async (res) => {
+    const decoded = jwtDecode(res.credential);
 
-  try {
-    // ON DEMANDE AU SERVEUR UBUNTU : "Est-ce que cet email existe ?"
-    const response = await fetch('http://localhost:5000/api/sync-contact', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: decoded.email,
-        name: decoded.name,
-        picture: decoded.picture
-      })
-    });
+    try {
+      // 1. RECHERCHE DANS SUPABASE
+      let { data: contact, error } = await supabase
+        .from('Sh_Contact')
+        .select('*')
+        .eq('email', decoded.email)
+        .single();
 
-    const data = await response.json();
+      // Si l'erreur est 'PGRST116', cela signifie simplement "non trouvé", on continue
+      if (error && error.code !== 'PGRST116') throw error;
 
-    // On met à jour le store avec les infos venant de la DB (tel, valid, etc.)
-    login({
-      ...decoded,
-      phone: data.exists ? data.user.tel : "",
-      db_id: data.id || data.user.id
-    });
+      if (contact) {
+        // L'utilisateur existe déjà
+        login({
+          ...decoded,
+          phone: contact.tel || "",
+          db_id: contact.id
+        });
 
-    // Si l'utilisateur n'existe pas ou n'a pas de téléphone validé
-    if (!data.exists || !data.user.tel) {
-      setShowModal(true);
+        if (!contact.tel) {
+          setShowModal(true);
+        }
+      } else {
+        // 2. CRÉATION D'UN NOUVEL UTILISATEUR
+        const { data: newUser, error: insError } = await supabase
+          .from('Sh_Contact')
+          .insert([{
+            email: decoded.email,
+            name: decoded.name,
+            valid: 0
+          }])
+          .select()
+          .single();
+
+        if (insError) throw insError;
+
+        login({
+          ...decoded,
+          phone: "",
+          db_id: newUser.id
+        });
+        setShowModal(true);
+      }
+    } catch (error) {
+      console.error("Erreur Supabase Sync:", error.message);
+      // Fallback local au cas où
+      login(decoded);
     }
-  } catch (error) {
-    console.error("Erreur de synchronisation avec le serveur local:", error);
-    // Fallback : on connecte quand même en local si le serveur est down
-    login(decoded);
-  }
-};
+  };
 
-const handleSavePhone = async (e) => {
-  e.preventDefault();
-  if (!phoneInput) return;
+  const handleSavePhone = async (e) => {
+    e.preventDefault();
+    if (!phoneInput) return;
 
-  try {
-    const response = await fetch('http://localhost:5000/api/update-tel', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: user.email,
-        tel: phoneInput
-      })
-    });
+    try {
+      // 3. MISE À JOUR DU TÉLÉPHONE DANS SUPABASE
+      const { error } = await supabase
+        .from('Sh_Contact')
+        .update({ tel: phoneInput, valid: 1 })
+        .eq('email', user.email);
 
-    const data = await response.json();
+      if (error) throw error;
 
-    if (data.success) {
       // Mise à jour du store Zustand
       setPhone(phoneInput);
-      // Fermeture de la modal
       setShowModal(false);
-      console.log("✅ Téléphone enregistré sur le serveur Ubuntu !");
+      console.log("✅ Téléphone enregistré dans Supabase !");
+    } catch (error) {
+      console.error("Erreur Supabase Update:", error.message);
+      alert("Erreur lors de la sauvegarde sur Supabase.");
     }
-  } catch (error) {
-    alert("Erreur lors de la sauvegarde sur le serveur local.");
-  }
-};
+  };
 
   return (
     <div className="min-h-screen bg-[#FDFDFF] font-sans antialiased text-slate-900">
-      {/* HEADER PREMIUM */}
+      {/* HEADER */}
       <nav className="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-slate-100 px-6 py-4 flex justify-between items-center">
         <div className="flex items-center gap-2 group cursor-pointer">
           <div className="bg-blue-600 p-2 rounded-xl text-white shadow-lg shadow-blue-200 group-hover:scale-110 transition-transform">
@@ -119,7 +134,7 @@ const handleSavePhone = async (e) => {
         </motion.div>
       </main>
 
-      {/* MODAL SANS AUTOMATISME */}
+      {/* MODAL WHATSAPP */}
       <AnimatePresence>
         {showModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-md p-4">

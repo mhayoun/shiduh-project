@@ -1,0 +1,35 @@
+export const translations = {
+  en: {
+    dir: 'ltr',
+    logo: 'SHIDUH',
+    heroTitle: 'Shiduhim',
+    heroSub: 'for Religious and Orthodox.',
+    heroDesc: 'Create professional profiles and manage candidates with ease.',
+    addCandidate: 'Add a candidate',
+    whatsappTitle: 'WhatsApp',
+    whatsappDesc: 'Your number is required for sharing profiles.',
+    confirm: 'CONFIRM',
+  },
+  fr: {
+    dir: 'ltr',
+    logo: 'SHIDUH',
+    heroTitle: 'Shiduhim',
+    heroSub: 'pour Religieux et Orthodoxes.',
+    heroDesc: 'Créez des fiches professionnelles et gérez vos candidats en toute simplicité.',
+    addCandidate: 'Ajouter un candidat',
+    whatsappTitle: 'WhatsApp',
+    whatsappDesc: 'Votre numéro est requis pour le partage de fiches.',
+    confirm: 'CONFIRMER',
+  },
+  he: {
+    dir: 'rtl',
+    logo: 'שידוך',
+    heroTitle: 'שידוכים',
+    heroSub: 'לדתיים וחרדים.',
+    heroDesc: 'צרו כרטיסים מקצועיים ונהלו מועמדים בקלות.',
+    addCandidate: 'הוסף מועמד',
+    whatsappTitle: 'וואטסאפ',
+    whatsappDesc: 'מספר הטלפון שלך נדרש לשיתוף כרטיסים.',
+    confirm: 'אישור',
+  }
+};

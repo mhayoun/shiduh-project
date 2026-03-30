@@ -6,7 +6,7 @@ export const userService = {
       .from('contacts')
       .select('*')
       .eq('email', email)
-      .single();
+      .maybeSingle();
 
     if (error && error.code !== 'PGRST116') throw error;
     return data;

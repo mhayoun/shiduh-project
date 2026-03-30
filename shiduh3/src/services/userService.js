@@ -3,7 +3,7 @@ import { supabase } from '../supabaseClient';
 export const userService = {
   async getContactByEmail(email) {
     const { data, error } = await supabase
-      .from('Sh_Contact')
+      .from('contacts')
       .select('*')
       .eq('email', email)
       .single();
@@ -14,7 +14,7 @@ export const userService = {
 
   async createContact(userData) {
     const { data, error } = await supabase
-      .from('Sh_Contact')
+      .from('contacts')
       .insert([{ ...userData, valid: 0 }])
       .select()
       .single();
@@ -25,7 +25,7 @@ export const userService = {
 
   async updatePhone(email, phone) {
     const { error } = await supabase
-      .from('Sh_Contact')
+      .from('contacts')
       .update({ tel: phone, valid: 1 })
       .eq('email', email);
 
